@@ -72,7 +72,7 @@ int main() {
 			swap(after[x], after[y]);
 		}
 
-		//cout << iteratie << ": " << eval(p)<<endl;
+		//cout << iter << ": " << eval(p)<<endl;
 
 		if (eval(now) == 0)
 			break;
