@@ -25,52 +25,140 @@ void cpy(int from[], int to[]) {
 		to[i] = from[i];
 }
 
-int main() {
-	cout << "N: "; cin >> n;
+int* possibilitiesX;  //vector of the X possibilities
+int** possibilitiesY; //matrix of the Y possibilities for each X
 
-	srand(unsigned(time(NULL)));
+int lenX; //actual length of possibilitiesX
+int* lenY;//actual length of each row in possibilitiesY
 
 
-	//initial array
+void initPossibilities() {
+	lenX = n;
+	lenY = new int[n];
+
+	possibilitiesX = new int[n];
+	possibilitiesY = new int* [n];
+
+	for (int i = 0;i < n;i++) {
+		lenY[i] = n;
+		possibilitiesX[i] = i;
+
+		possibilitiesY[i] = new int[n];
+		for (int j = 0;j < n;j++)
+			possibilitiesY[i][j] = j;
+
+	}
+}
+void resetPossibilities() {
+	lenX = n;
+
+	for (int i = 0;i < n;i++)
+		lenY[i] = n;
+}
+
+bool removeX(int x) {
+	lenX--;
+	for (int i = x;i < lenX;i++) {
+		swap(possibilitiesX[i], possibilitiesX[i + 1]);
+		swap(lenY[i], lenY[i + 1]);
+	}
+	return lenX < 1;
+}
+bool removeXY(int x, int y) {
+	lenY[x]--;
+	//lenY[y]--;
+
+	for (int i = y;i < lenY[x];i++)
+		swap(possibilitiesY[x][i], possibilitiesY[x][i + 1]);
+
+	//for (int i = x;i < lenY[y];i++)
+	//	swap(possibilitiesY[y][i], possibilitiesY[y][i + 1]);
+
+	bool X = lenY[x] > 0 ? false : removeX(x);
+	//bool Y = lenY[y] > 0 ? false : removeX(y);
+
+	return X; //|| Y;
+}
+
+void initArray() {
 	now = new int[n];
 	after = new int[n];
 	for (int i = 0;i < n;i++)
 		now[i] = i;
 	for (int i = 0; i < n;i++)
 		swap(now[i], now[rand() % n]);
+}
 
-	/*
+int main() {
+	cout << "N: "; cin >> n;
+
+	srand(unsigned(time(NULL)));
+
+	initArray();
+
+	/* //print the initial array
 	for (int i = 0;i < n;i++)
 		cout << p[i] << ' ';
 	cout << endl;
 	*/
-	int iter;
+
+	initPossibilities();
+
+	/*//test initPossibilities
+	cout <<"lenX: "<< lenX<<"\nLenY: ";
+
+	for (int i = 0;i < n;i++)
+		cout << lenY[i] << ' ';
+	cout << "\nPossibilitiesX";
+
+	for (int i = 0;i < n;i++)
+		cout << possibilitiesX[i] << ' ';
+	cout << "\nPossibiliyiesY:\n";
+	for (int i = 0;i < n;i++) {
+		for (int j = 0;j < n;j++)
+			cout << possibilitiesY[i][j] << ' ';
+		cout << '\n';
+	}
+	_getch();
+	system("cls");
+	*/
+
+
+	int iter = 0;
+	a = eval(now);
 	cpy(now, after);
-	for (iter = 0; iter < n * n * n;iter++) {
-		
-		//cout << iteratie + 1 << ": " << ev << '\n';
+	while (a > 0) {
 
-		int x, y;
-		x = rand() % n;
-		do y = rand() % n; while (x == y);
+		iter++;
+		int randX, randY, actualX, actualY;
+
+		//x = rand() % n;
+		//do y = rand() % n; while (x == y);
+
+		randX = rand() % lenX;
+		actualX = possibilitiesX[randX];
+
+		randY = rand() % lenY[randX];
+		actualY = possibilitiesY[randX][randY];
 
 
-		//cout << x << ' ' << y << endl;
-		swap(after[x], after[y]);
+		//cout << actualX << ' ' << actualY << endl;
+
+		swap(after[actualX], after[actualY]);
+
 		int ev = eval(after);
 		if (ev < a) {
-			swap(now[x], now[y]);
+			swap(now[actualX], now[actualY]);
 			a = ev;
+			resetPossibilities();
 			cout << iter << ": " << ev << endl;
 		}
 		else {
-			swap(after[x], after[y]);
+			swap(after[actualX], after[actualY]);
+			if (removeXY(randX, randY))
+				break;
 		}
-
 		//cout << iter << ": " << eval(p)<<endl;
-
-		if (eval(now) == 0)
-			break;
 	}
 
 
@@ -110,10 +198,10 @@ int main() {
 	for (int i = 0;i < n;i++) {
 		for (int j = 0;j < n;j++) {
 			if (now[j] == i) {
-				if (mat[i][j]) cout << " X";
-				else cout << " O";
+				if (mat[i][j]) cout << "X";
+				else cout << "O";
 			}
-			else cout << " -";
+			else cout << "-";
 		}
 		cout << endl;
 	}
