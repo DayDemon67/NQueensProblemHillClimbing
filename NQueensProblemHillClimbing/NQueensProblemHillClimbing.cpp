@@ -5,26 +5,29 @@
 
 using namespace std;
 
-int n; //dimensiune
+int n;
 
-int* p;//vector curent
-int a;//atacuri curente
-int* u;//vector urmator
+int* now;//current array
+int a;//eval of now
+int* after;//next array
 
 
 int eval(int vec[]) {
-	int erori = 0;
+	int errors = 0;
 	for (int i = 0; i < n - 1; i++)
 		for (int j = i + 1; j < n; j++)
 			if (abs(vec[i] - vec[j]) == j - i)
-				erori++;
-	return erori;
+				errors++;
+	return errors;
 }
-
 void cpy(int from[], int to[]) {
 	for (int i = 0;i < n;i++)
 		to[i] = from[i];
 }
+
+int* possibiliyiesX;  //vector of the X possibilities
+int** possibilitiesY; //matrix of the Y possibilities for each X
+
 
 
 int main() {
@@ -34,21 +37,21 @@ int main() {
 
 
 	//initializare vector
-	p = new int[n];
-	u = new int[n];
+	now = new int[n];
+	after = new int[n];
 	for (int i = 0;i < n;i++)
-		p[i] = i;
+		now[i] = i;
 	for (int i = 0; i < n;i++)
-		swap(p[i], p[rand() % n]);
+		swap(now[i], now[rand() % n]);
 
 	/*
 	for (int i = 0;i < n;i++)
 		cout << p[i] << ' ';
 	cout << endl;
 	*/
-	int iteratie;
-	cpy(p, u);
-	for (iteratie = 0; iteratie < n * n * n;iteratie++) {
+	int iter;
+	cpy(now, after);
+	for (iter = 0; iter < n * n * n;iter++) {
 		
 		//cout << iteratie + 1 << ": " << ev << '\n';
 
@@ -58,19 +61,20 @@ int main() {
 
 
 		//cout << x << ' ' << y << endl;
-		swap(u[x], u[y]);
-		int ev = eval(u);
-		if (ev < eval(p)) {
-			swap(p[x], p[y]);
-			cout << iteratie << ": " << ev << endl;
+		swap(after[x], after[y]);
+		int ev = eval(after);
+		if (ev < a) {
+			swap(now[x], now[y]);
+			a = ev;
+			cout << iter << ": " << ev << endl;
 		}
 		else {
-			swap(u[x], u[y]);
+			swap(after[x], after[y]);
 		}
 
 		//cout << iteratie << ": " << eval(p)<<endl;
 
-		if (eval(p) == 0)
+		if (eval(now) == 0)
 			break;
 	}
 
@@ -86,13 +90,13 @@ int main() {
 
 
 	for (int i = 0;i < n;i++) {
-		//toate damele
+		//all queens
 		for (int j = 0;j < n;j++) {
-			//toate coloanele;
+			//all collumns;
 			if (i == j)
 				continue;
-			int x = p[i] - (i - j);
-			int y = p[i] + (i - j);
+			int x = now[i] - (i - j);
+			int y = now[i] + (i - j);
 			if (x < n && x >= 0)
 				mat[x][j]++;
 			if (y < n && y >= 0)
@@ -103,14 +107,14 @@ int main() {
 
 	system("cls");
 
-	//afis
+	//show
 	for (int i = 0;i < n;i++)
-		cout << p[i] + 1 << ' ';
+		cout << now[i] + 1 << ' ';
 	cout << "\n\n";
 
 	for (int i = 0;i < n;i++) {
 		for (int j = 0;j < n;j++) {
-			if (p[j] == i) {
+			if (now[j] == i) {
 				if (mat[i][j]) cout << " X";
 				else cout << " O";
 			}
@@ -118,16 +122,7 @@ int main() {
 		}
 		cout << endl;
 	}
-	cout << eval(p) << ' ' << iteratie << "\n\n";
-
-	//debug matrice atacuri
-	/*
-	for (int i = 0;i < n;i++) {
-		for (int j = 0;j < n;j++)
-			cout << mat[i][j] << ' ';
-		cout << endl;
-	}
-	*/
+	cout << eval(now) << ' ' << iter << "\n\n";
 
 	_getch();
 	return 0;
