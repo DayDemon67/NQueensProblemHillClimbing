@@ -31,7 +31,7 @@ int main() {
 	srand(unsigned(time(NULL)));
 
 
-	//initializare vector
+	//initial array
 	now = new int[n];
 	after = new int[n];
 	for (int i = 0;i < n;i++)
