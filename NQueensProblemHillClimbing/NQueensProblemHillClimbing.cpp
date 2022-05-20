@@ -25,18 +25,13 @@ void cpy(int from[], int to[]) {
 		to[i] = from[i];
 }
 
-int* possibiliyiesX;  //vector of the X possibilities
-int** possibilitiesY; //matrix of the Y possibilities for each X
-
-
-
 int main() {
 	cout << "N: "; cin >> n;
 
 	srand(unsigned(time(NULL)));
 
 
-	//initializare vector
+	//initial array
 	now = new int[n];
 	after = new int[n];
 	for (int i = 0;i < n;i++)
@@ -72,7 +67,7 @@ int main() {
 			swap(after[x], after[y]);
 		}
 
-		//cout << iteratie << ": " << eval(p)<<endl;
+		//cout << iter << ": " << eval(p)<<endl;
 
 		if (eval(now) == 0)
 			break;
