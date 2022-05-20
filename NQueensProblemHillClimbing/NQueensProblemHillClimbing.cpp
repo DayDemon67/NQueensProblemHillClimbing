@@ -25,11 +25,6 @@ void cpy(int from[], int to[]) {
 		to[i] = from[i];
 }
 
-int* possibiliyiesX;  //vector of the X possibilities
-int** possibilitiesY; //matrix of the Y possibilities for each X
-
-
-
 int main() {
 	cout << "N: "; cin >> n;
 
